@@ -1,4 +1,4 @@
-import Content from "@/components/base/Content";
+import Content from "@/components/base/content";
 import Sidebar from "@/components/base/sidebar";
 import { useState } from "react";
 

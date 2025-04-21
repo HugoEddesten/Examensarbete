@@ -1,20 +1,18 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
-import Home from './features/home/Home'
-import Layout from './layouts/main'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import AppRoutes from './routes/AppRoutes'
+import { SidebarProvider } from './contexts/SidebarContext'
+
+const queryClient = new QueryClient()
 
 function App() {
-
-
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="/home" element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <SidebarProvider>
+          <AppRoutes />
+        </SidebarProvider>
+      </QueryClientProvider>
     </>
   )
 }

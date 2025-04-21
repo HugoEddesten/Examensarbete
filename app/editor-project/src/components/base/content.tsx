@@ -1,5 +1,3 @@
-import { cn } from "@/lib/utils";
-import { Menu } from "lucide-react";
 import { Outlet } from "react-router-dom";
 import Header from "./header";
 

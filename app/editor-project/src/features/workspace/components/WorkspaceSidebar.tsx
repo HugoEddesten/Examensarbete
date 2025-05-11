@@ -22,7 +22,13 @@ export default function WorkspaceSidebar() {
         </div>
       </div>
       <div className="pr-2">
-        
+        {type === "workspace" && (
+          <div>
+
+
+
+          </div>
+        )}
       </div>
     </div>
   )

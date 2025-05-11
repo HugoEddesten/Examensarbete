@@ -1,47 +1,88 @@
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { useBoards } from "../api/useBoards";
-import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ActivityContainer from "./ActivityContainer";
-import { useSidebar } from "@/contexts/SidebarContext";
+import Board from "./Board";
+import { Board as BoardType } from "@/features/workspace/types/index.ts";
+import { cn } from "@/lib/utils";
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  MouseSensor,
+  TouchSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { useWorkspaceStore } from "@/store/workspaceStore";
+import { useCallback, useState } from "react";
+import {
+  horizontalListSortingStrategy,
+  rectSortingStrategy,
+  rectSwappingStrategy,
+  SortableContext,
+} from "@dnd-kit/sortable";
+import _ from "lodash";
 
 export default function BoardContainer({
   workspaceId,
 }: {
   workspaceId: string;
 }) {
-  const { data, isFetching } = useBoards(workspaceId);
-  const { sidebar, openSidebar } = useSidebar();
+  const boards = Object.values(useWorkspaceStore(state => state.boards));
+  const addBoard = useWorkspaceStore((state) => state.addBoard);
+  const updateBoard = useWorkspaceStore((state) => state.updateBoard);
+  console.log(boards.map(x => (x.id)))
 
-  if (isFetching) {
-    return <div>...Loading</div>;
-  }
+
+  const handleDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    const { positionX: newPosX} = over?.data.current as BoardType;
+    const { positionX: oldPosX} = active?.data.current as BoardType;
+
+    if (!over?.id || over.id === active.id) return;
+
+    // updateBoard({...over.data.current, id: `${over.id}`, positionX: oldPosX})
+    // updateBoard({...active.data.current, id: `${active.id}`, positionX: newPosX})
+    
+  };
 
   return (
-    <div>
-      {(data ?? []).map((b) => (
-        <Card
-          key={b.id}
-          style={{
-            position: "absolute",
-            top: b.positionY,
-            left: b.positionY,
-            width: b.width,
-            height: b.height,
-          }}
-          onClick={() => openSidebar({type: "board", data: b})}
-        >
-          <CardTitle className="flex items-center justify-between px-2">
-            <span>{b.title}</span>
-            <Button>
-              <PlusCircle />
-            </Button>
-          </CardTitle>
-          <CardContent className="p-0">
-            <ActivityContainer boardId={b.id} />
-          </CardContent>
-        </Card>
-      ))}
+    <div className="overflow-hidden w-full h-full ">
+      <Button
+        onClick={() =>
+          addBoard({
+            id: `${0 - boards.length}`,
+            activities: [],
+            positionX: boards.length + 1,
+            positionY: 1,
+            title: `${0 - boards.length}`,
+            workspaceId: workspaceId,
+          })
+        }
+      >
+        Add Board
+      </Button>
+
+      <DndContext
+        
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext strategy={horizontalListSortingStrategy} items={boards}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${boards.length}, minmax(300px, 300px))`,
+              gap: "1em",
+              gridTemplateRows: '1fr',
+            }}
+            className={cn(`p-4 h-full overflow-auto`)}
+          >
+            {(boards ?? []).map((board) => (
+              <Board key={board.id} boardData={board} index={board.positionX ?? 0} />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 }

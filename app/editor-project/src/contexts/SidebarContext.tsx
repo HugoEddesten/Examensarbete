@@ -1,11 +1,11 @@
-import { Activity, Board } from "@/features/workspace/types";
+import { Activity, Board, Workspace } from "@/features/workspace/types";
 import { createContext, useContext, useState } from "react";
 
-type SidebarType = "activity" | "board";
+type SidebarType = "activity" | "board" | "workspace";
 
 type SidebarState = {
   type: SidebarType;
-  data: Activity | Board;
+  data: Activity | Board | Workspace;
 };
 
 type SidebarContextType = {

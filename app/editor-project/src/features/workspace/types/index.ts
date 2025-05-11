@@ -8,12 +8,10 @@ export type Workspace = {
 export type Board = {
   id: string;
   title?: string;
-  positionX: number;
-  positionY: number;
-  width: number;
-  height: number;
-  workspaceId: string;
-  activities: Activity[];
+  positionX?: number;
+  positionY?: number;
+  workspaceId?: string;
+  activities?: Activity[];
 }
 
 export type Activity = {
@@ -27,5 +25,6 @@ export type Activity = {
 
 export const SidebarTypesDisplay = {
   board: 'Board',
-  activity: 'Activity'
+  activity: 'Activity',
+  workspace: "Workspace"
 }

@@ -10,9 +10,9 @@ const getWorkspace = async (id: string): Promise<Workspace>  => {
 }
 
 export const useWorkspace = (id: string) => {
-    return useQuery({
-      queryKey: [QUERY_KEY, id],
-      queryFn: () => getWorkspace(id),
-      enabled: !!id,
-    })
+  return useQuery({
+    queryKey: [QUERY_KEY, id],
+    queryFn: () => getWorkspace(id),
+    enabled: !!id,
+  })
 }

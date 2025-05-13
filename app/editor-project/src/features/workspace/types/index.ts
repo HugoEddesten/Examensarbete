@@ -20,12 +20,24 @@ export type Activity = {
   id: string;
   title: string;
   description?: string;
-  createdDate: Date;
+  createdDate?: Date;
   updatedDate?: Date;
   boardId: string;
 }
 
+export interface BaseQueryOptions {
+  debounceMs: number;
+}
+
 export const SidebarTypesDisplay = {
+  workspace: 'Workspace',
   board: 'Board',
   activity: 'Activity'
+}
+
+export const QUERY_KEYS = {
+  ACTIVITY: 'activity',
+  BOARD: 'board',
+  WORKSPACE: 'workspace',
+
 }

@@ -1,6 +1,6 @@
+import { Board } from "@/features/workspace/types"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
-import { Board } from "../types"
 
 const QUERY_KEY = "boards"
 

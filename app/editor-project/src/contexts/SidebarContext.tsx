@@ -1,12 +1,22 @@
-import { Activity, Board } from "@/features/workspace/types";
-import { createContext, useContext, useState } from "react";
+import { Activity, Board, Workspace } from "@/features/workspace/types";
+import { createContext, useContext, useMemo, useState } from "react";
 
-type SidebarType = "activity" | "board";
-
-type SidebarState = {
-  type: SidebarType;
-  data: Activity | Board;
+type SidebarActivity = {
+  type: "activity";
+  data: Activity;
 };
+
+type SidebarBoard = {
+  type: "board";
+  data: Board;
+};
+
+type SidebarWorkspace = {
+  type: "workspace";
+  data: Workspace;
+};
+
+export type SidebarState = SidebarActivity | SidebarBoard | SidebarWorkspace;
 
 type SidebarContextType = {
   sidebar: SidebarState | null;
@@ -24,13 +34,19 @@ export const SidebarProvider = ({
   const [sidebar, setSidebar] = useState<SidebarState | null>(null);
 
   const openSidebar = (sidebar: SidebarState) => {
-    setSidebar(sidebar);
+    setSidebar(prev => prev && prev.data.id === sidebar.data.id ? prev : sidebar);
   };
 
   const closeSidebar = () => setSidebar(null);
 
+  const contextValue = useMemo(() => ({
+    sidebar,
+    openSidebar,
+    closeSidebar
+  }), [sidebar]);
+  
   return (
-    <SidebarContext.Provider value={{ sidebar, openSidebar, closeSidebar }}>
+    <SidebarContext.Provider value={contextValue}>
       {children}
     </SidebarContext.Provider>
   );
@@ -38,6 +54,6 @@ export const SidebarProvider = ({
 
 export const useSidebar = () => {
   const ctx = useContext(SidebarContext);
-  if (!ctx) throw new Error("useSidebar must be used within SidebarProvider")
-  return ctx
-}
+  if (!ctx) throw new Error("useSidebar must be used within SidebarProvider");
+  return ctx;
+};

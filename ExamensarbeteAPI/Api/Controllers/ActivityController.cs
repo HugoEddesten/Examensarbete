@@ -54,6 +54,18 @@ public class ActivityController : ControllerBase
         }
     }
 
+    [HttpGet("{activityId}")]
+    public async Task<IActionResult> GetActivity([FromRoute] Guid activityId)
+    {
+        ActivityEntity? activity = await _context.Activities.FirstOrDefaultAsync(a => a.Id == activityId);
+
+        if (activity != null)
+        {
+            return Ok(activity);
+        }
+        return NotFound();
+    }
+
     //[HttpGet("{id}")]
     //public async Task<IActionResult> Get([FromRoute] Guid id)
     //{

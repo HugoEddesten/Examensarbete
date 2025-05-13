@@ -25,6 +25,10 @@ public class BoardController : ControllerBase
             {
                 Title = model.Title,
                 WorkspaceId = model.WorkspaceId,
+                PositionX = model.PositionX,
+                PositionY = model.PositionY,
+                Width = model.Width,
+                Height = model.Height,
             };
 
             _context.Boards.Add(board);

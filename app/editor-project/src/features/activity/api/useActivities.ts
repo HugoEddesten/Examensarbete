@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { Activity } from "../types"
 
@@ -10,9 +10,11 @@ const getActivities = async (boardId: string): Promise<Activity[]> => {
 }
 
 export const useActivities = (boardId: string) => {
-    return useQuery({
-      queryKey: [QUERY_KEY, boardId],
-      queryFn: () => getActivities(boardId),
-      enabled: !!boardId,
-    })
+
+  const queryClient = useQueryClient()
+  return useQuery({
+    queryKey: [QUERY_KEY, boardId],
+    queryFn: () => getActivities(boardId),
+    enabled: !!boardId,
+  }, queryClient)
 }

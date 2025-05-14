@@ -27,10 +27,10 @@ export default function BoardContainer({
 }: {
   workspaceId: string;
 }) {
-  const boards = Object.values(useWorkspaceStore(state => state.boards));
+  const boards = useWorkspaceStore(state => state.boards);
   const addBoard = useWorkspaceStore((state) => state.addBoard);
-  const updateBoard = useWorkspaceStore((state) => state.updateBoard);
-  console.log(boards.map(x => (x.id)))
+  const moveBoard = useWorkspaceStore((state) => state.moveBoard);
+  // console.log(boards.map(x => (x.id)))
 
 
   const handleDragEnd = (e: DragEndEvent) => {
@@ -40,11 +40,10 @@ export default function BoardContainer({
 
     if (!over?.id || over.id === active.id) return;
 
-    // updateBoard({...over.data.current, id: `${over.id}`, positionX: oldPosX})
-    // updateBoard({...active.data.current, id: `${active.id}`, positionX: newPosX})
-    
-  };
+    moveBoard({...active.data.current, id: `${active.id}`, positionX: newPosX});
 
+  };
+  console.log(boards.map(b => b.positionX))
   return (
     <div className="overflow-hidden w-full h-full ">
       <Button
@@ -63,11 +62,10 @@ export default function BoardContainer({
       </Button>
 
       <DndContext
-        
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext strategy={horizontalListSortingStrategy} items={boards}>
+        <SortableContext strategy={rectSortingStrategy} items={boards}>
           <div
             style={{
               display: "grid",
@@ -78,7 +76,7 @@ export default function BoardContainer({
             className={cn(`p-4 h-full overflow-auto`)}
           >
             {(boards ?? []).map((board) => (
-              <Board key={board.id} boardData={board} index={board.positionX ?? 0} />
+              <Board key={board.id} boardData={board} />
             ))}
           </div>
         </SortableContext>

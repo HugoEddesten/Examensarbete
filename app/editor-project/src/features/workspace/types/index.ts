@@ -8,7 +8,7 @@ export type Workspace = {
 export type Board = {
   id: string;
   title?: string;
-  positionX?: number;
+  positionX: number;
   positionY?: number;
   workspaceId?: string;
   activities?: Activity[];

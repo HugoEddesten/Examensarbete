@@ -7,15 +7,14 @@ import { cn } from "@/lib/utils";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { useWorkspaceStore } from "@/store/workspaceStore";
-import { useSortable } from "@dnd-kit/sortable";
+
 import { Board as BoardType } from "@/features/workspace/types/index";
+import { useSortable } from "@dnd-kit/sortable";
 
 export default function Board({
   boardData,
-  index,
 }: {
   boardData: BoardType;
-  index: number;
 }) {
   const {
     isDragging,
@@ -25,7 +24,7 @@ export default function Board({
     transform,
     transition,
   } = useSortable({
-    id: index,
+    id: boardData.id,
     data: {
       ...boardData,
     },
@@ -40,7 +39,7 @@ export default function Board({
         gridRowStart: 1,
       }}
       ref={setNodeRef}
-      key={index}
+      key={boardData.id}
       className={"col-span-1 h-fit"}
       {...listeners}
       {...attributes}
@@ -52,7 +51,7 @@ export default function Board({
         </Button>
       </CardTitle>
       <CardContent className="p-0">
-        <ActivityContainer boardId={boardData.id} />
+        {/* <ActivityContainer boardId={boardData.id} /> */}
       </CardContent>
     </Card>
   );

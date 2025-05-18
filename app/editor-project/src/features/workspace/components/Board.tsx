@@ -26,7 +26,8 @@ export default function Board({
   } = useSortable({
     id: boardData.id,
     data: {
-      ...boardData,
+      position: boardData.positionX,
+      type: 'board',
     },
   });
 
@@ -37,21 +38,20 @@ export default function Board({
         touchAction: "none",
         gridColumnStart: boardData.positionX,
         gridRowStart: 1,
+        transition,
       }}
       ref={setNodeRef}
       key={boardData.id}
-      className={"col-span-1 h-fit"}
-      {...listeners}
+      className={"col-span-1 h-fit p-0"}
+      
       {...attributes}
     >
-      <CardTitle className="flex items-center justify-between px-2">
-        <span>{boardData.title}</span>
-        <Button>
-          <PlusCircle />
-        </Button>
-      </CardTitle>
-      <CardContent className="p-0">
-        {/* <ActivityContainer boardId={boardData.id} /> */}
+      
+      <CardContent className="flex flex-col p-4 gap-4">
+        <CardTitle {...listeners} className="flex items-center justify-between">
+          <span className="px-2 w-24 bg-gray-200 py-2 rounded-sm text-start">{boardData.title}</span>
+        </CardTitle>
+        <ActivityContainer boardId={boardData.id} />
       </CardContent>
     </Card>
   );

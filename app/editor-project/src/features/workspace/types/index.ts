@@ -17,6 +17,7 @@ export type Board = {
 export type Activity = {
   id: string;
   title: string;
+  index: number;
   description?: string;
   createdDate: Date;
   updatedDate?: Date;

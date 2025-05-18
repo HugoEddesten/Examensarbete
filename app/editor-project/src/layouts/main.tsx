@@ -9,7 +9,7 @@ export default function Layout() {
   
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-y-hidden overflow-x-hidden">
       <Sidebar visible={isSidebarVisible} setVisible={setIsSidebarVisible}/>
     
       <Content isSidebarVisible={isSidebarVisible} setIsSidebarVisible={setIsSidebarVisible} />

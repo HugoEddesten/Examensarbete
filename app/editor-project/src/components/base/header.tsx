@@ -8,7 +8,7 @@ export default function Header(
 ) {
 
   return (
-    <div className="flex bg-zinc-700 p-2 py-4 gap-12">
+    <div className="flex bg-zinc-700 p-2 py-6 gap-12">
       <Menu onClick={(e) =>  {
         e.stopPropagation()
         setSidebarVisible(true)

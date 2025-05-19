@@ -1,6 +1,9 @@
 import { Button } from "@/components/ui/button";
 import Board from "./Board";
-import { Board as BoardType } from "@/features/workspace/types/index.ts";
+import {
+  Activity,
+  Board as BoardType,
+} from "@/features/workspace/types/index.ts";
 import { cn } from "@/lib/utils";
 import {
   DndContext,
@@ -32,43 +35,53 @@ export default function BoardContainer({
 }: {
   workspaceId: string;
 }) {
-  const boards = useWorkspaceStore(state => state.boards);
+  const boards = useWorkspaceStore((state) => state.boards);
   const addBoard = useWorkspaceStore((state) => state.addBoard);
   const moveBoard = useWorkspaceStore((state) => state.moveBoard);
+  const moveActivity = useWorkspaceStore((state) => state.moveActivity);
+  const updateActivity = useWorkspaceStore((state) => state.updateActivity);
 
-    const sensors = useSensors(
+  const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   const handleDragMove = (event: DragMoveEvent) => {
     // https://github.com/chetanverma16/dndkit-guide/blob/main/pages/index.tsx#L384
-    console.log(event.active)
+    const { active, over } = event;
 
-    if (event.active.data.current?.type === 'activity') {
-      if (event.active.data.current.boardId !== event.over?.data.current?.boardId) {
-        console.log('oopsie')
+    if (active.data.current?.type === "activity") {
+      if (active.data.current.boardId !== over?.data.current?.boardId) {
+        const activity = active.data.current.model as Activity;
+        updateActivity({
+          ...activity,
+          boardId: over?.data.current?.boardId,
+        });
       }
     }
-
-  }
+  };
 
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
 
     if (!over?.id || over.id === active.id) return;
 
-    if (active.data.current?.type === 'board') {
-      moveBoard({...boards.find(b => b.id === active.id), id: `${active.id}`, positionX: over.data.current?.position});
-    } 
-    else if (active.data.current?.type == 'activity') {
-      console.log('hejsan')
+    if (active.data.current?.type === "board") {
+      moveBoard({
+        ...boards.find((b) => b.id === active.id),
+        id: `${active.id}`,
+        positionX: over.data.current?.position,
+      });
+    } else if (active.data.current?.type === "activity") {
+      moveActivity({
+        ...active.data.current.model,
+        index: over.data.current?.model.index,
+      });
     }
   };
 
-  console.log(boards.map(b => b.id))
   return (
     <div className="overflow-hidden w-full h-full p-4">
       <Button
@@ -92,13 +105,12 @@ export default function BoardContainer({
         onDragMove={handleDragMove}
         sensors={sensors}
       >
-        <SortableContext items={boards.map(b => b.id)}>
+        <SortableContext items={boards}>
           <div
             style={{
               display: "grid",
               gridTemplateColumns: `repeat(${boards.length}, minmax(500px, 500px))`,
               gap: "1em",
-              
             }}
             className={cn(`p-4 h-full overflow-auto`)}
           >

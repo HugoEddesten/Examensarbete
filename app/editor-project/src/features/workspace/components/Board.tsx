@@ -1,13 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { useSidebar } from "@/contexts/SidebarContext";
-import { PlusCircle } from "lucide-react";
 import ActivityContainer from "./ActivityContainer";
-import { cn } from "@/lib/utils";
-import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import { useWorkspaceStore } from "@/store/workspaceStore";
-
 import { Board as BoardType } from "@/features/workspace/types/index";
 import { useSortable } from "@dnd-kit/sortable";
 
@@ -28,6 +21,7 @@ export default function Board({
     data: {
       position: boardData.positionX,
       type: 'board',
+      boardId: boardData.id,
     },
   });
 

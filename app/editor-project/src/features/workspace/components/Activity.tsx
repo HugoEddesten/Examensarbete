@@ -23,6 +23,7 @@ export default function Activity({ activity }: { activity: ActivityType }) {
     data: {
       position: activity.index,
       boardId: activity.boardId,
+      model: activity ,
       type: 'activity',
     } 
   });

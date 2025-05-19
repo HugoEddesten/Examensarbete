@@ -11,6 +11,7 @@ type WorkspaceStore = {
 
   addActivity: (boardId: string) => void;
   updateActivity: (activity: Activity) => void;
+  moveActivity : (movedActivity: Activity) => void;
 
   getActivities: (boardId: string) => Activity[];
 };
@@ -71,7 +72,7 @@ export const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
     const newActivity = {
       id: `${1 + activitiesLength}`,
       boardId: boardId,
-      index: activitiesLength,
+      index: activitiesLength + 1,
       createdDate: new Date(Date.now()),
       title: "",
       description: "",
@@ -89,6 +90,35 @@ export const useWorkspaceStore = create<WorkspaceStore>((set, get) => ({
         return a;
       }),
     })),
+  moveActivity: (movedActivity) => {
+    const prevIndex = get().activities.find((a) => a.id === movedActivity.id)?.index;
+    const newIndex = movedActivity.index;
+    if (!prevIndex) return;
+
+    set((state) => {
+      const positionedActivityList = state.activities.map((a) => {
+        if (a.id === movedActivity.id) {
+          return movedActivity;
+        }
+        if (movedActivity.index > prevIndex) {
+          if (a.index > prevIndex && a.index <= newIndex) {
+            return { ...a, index: a.index - 1 };
+          }
+          return a;
+        }
+        if (movedActivity.index < prevIndex) {
+          if (a.index < prevIndex && a.index >= newIndex) {
+            return { ...a, index: a.index + 1 };
+          }
+          return a;
+        }
+        return a;
+      });
+      return {
+        activities: positionedActivityList.sort((a, b) => a.index - b.index),
+      };
+    });
+  }
 }));
 
 export const useBoardStore = (boardId: string) => {

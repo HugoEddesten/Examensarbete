@@ -58,6 +58,12 @@ export default function ActivityContainer({ boardId }: { boardId: string }) {
 
   //const {setNodeRef, active, isOver} = useDroppable({id: boardId})
 
+
+
+  
+  
+  
+  /*console.log(boardId, activities)*/
   return (
     <div  className="flex justify-center flex-col bg-gray-300 gap-4 min-h-38 p-1 rounded-md w-full">
       

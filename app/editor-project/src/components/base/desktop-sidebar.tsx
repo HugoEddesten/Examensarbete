@@ -14,8 +14,8 @@ export default function DesktopSidebar(
 
   return (
     <div className={cn(
-      "text-accent bg-primary w-xs h-full transition-normal duration-200 overflow-hidden",
-      !visible && 'w-0',
+      "text-accent bg-primary min-w-76 w-xs h-full overflow-hidden",
+      !visible && 'hidden',
     )}>
       <div className="flex p-8 relative">
         <h2 className="text-4xl">Project</h2>

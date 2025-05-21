@@ -1,5 +1,6 @@
 import { Activity, Board, Workspace } from "@/features/workspace/types";
-import { createContext, useContext, useState } from "react";
+import { MouseEvent } from "react";
+import { create } from "zustand";
 
 type SidebarType = "activity" | "board" | "workspace";
 
@@ -8,36 +9,23 @@ type SidebarState = {
   data: Activity | Board | Workspace;
 };
 
-type SidebarContextType = {
+type SidebarStore = {
   sidebar: SidebarState | null;
-  openSidebar: (sidebar: SidebarState) => void;
-  closeSidebar: () => void;
+  setSidebar: (event: MouseEvent, sidebar: SidebarState | null) => void;
 };
 
-const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
-
-export const SidebarProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [sidebar, setSidebar] = useState<SidebarState | null>(null);
-
-  const openSidebar = (sidebar: SidebarState) => {
-    setSidebar(sidebar);
-  };
-
-  const closeSidebar = () => setSidebar(null);
-
-  return (
-    <SidebarContext.Provider value={{ sidebar, openSidebar, closeSidebar }}>
-      {children}
-    </SidebarContext.Provider>
-  );
-};
-
-export const useSidebar = () => {
-  const ctx = useContext(SidebarContext);
-  if (!ctx) throw new Error("useSidebar must be used within SidebarProvider")
-  return ctx
-}
+export const useSidebarStore = create<SidebarStore>((set, get) => ({
+  sidebar: null,
+  setSidebar: (event, sidebar) => {
+    event.stopPropagation();
+    const oldSidebar = get().sidebar;
+    if (
+      !oldSidebar ||
+      sidebar?.type !== oldSidebar.type ||
+      sidebar.data.id !== oldSidebar.data.id
+    )
+      set({
+        sidebar: sidebar,
+      });
+  },
+}));

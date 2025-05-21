@@ -1,11 +1,10 @@
 import { Card, CardTitle } from "@/components/ui/card";
 import PageTitle from "@/components/ui/page-title";
 import { Link } from "react-router-dom";
-import { useWorkspaces } from "../workspace/api/useWorkspaces";
-
+import { useWorkspaces } from "../workspace/api/workspace/useWorkspaces";
 
 export default function Home() {
-  const { data } = useWorkspaces()
+  const { data } = useWorkspaces();
 
   return (
     <div className="p-2">
@@ -13,8 +12,7 @@ export default function Home() {
 
       <div className="flex gap-6 p-6">
         {data.map((w) => (
-          <Link to={`/workspace/${w.id}`}
-          >
+          <Link to={`/workspace/${w.id}`}>
             <Card className="w-48 h-48 p-4 cursor-pointer">
               <CardTitle>{w.title}</CardTitle>
             </Card>
@@ -22,5 +20,5 @@ export default function Home() {
         ))}
       </div>
     </div>
-  )
+  );
 }

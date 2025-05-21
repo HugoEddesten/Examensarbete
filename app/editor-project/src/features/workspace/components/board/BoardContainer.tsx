@@ -1,39 +1,31 @@
 import { Button } from "@/components/ui/button";
 import Board from "./Board";
-import {
-  Activity,
-  Board as BoardType,
-} from "@/features/workspace/types/index.ts";
+import { Activity, Workspace } from "@/features/workspace/types/index.ts";
 import { cn } from "@/lib/utils";
 import {
   DndContext,
   DragEndEvent,
   DragMoveEvent,
-  DragStartEvent,
   KeyboardSensor,
-  MouseSensor,
   PointerSensor,
-  TouchSensor,
   closestCenter,
   closestCorners,
+  pointerWithin,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import { useWorkspaceStore } from "@/store/workspaceStore";
-import { useCallback, useState } from "react";
 import {
-  horizontalListSortingStrategy,
-  rectSortingStrategy,
-  rectSwappingStrategy,
   SortableContext,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import _ from "lodash";
+import EditorSidebar from "@/features/editor-sidebar/EditorSidebar";
 
 export default function BoardContainer({
-  workspaceId,
+  workspace,
 }: {
-  workspaceId: string;
+  workspace: Workspace;
 }) {
   const boards = useWorkspaceStore((state) => state.boards);
   const addBoard = useWorkspaceStore((state) => state.addBoard);
@@ -83,21 +75,27 @@ export default function BoardContainer({
   };
 
   return (
-    <div className="overflow-hidden w-full h-full p-4">
-      <Button
-        onClick={() =>
-          addBoard({
-            id: `${0 - boards.length}`,
-            activities: [],
-            positionX: boards.length + 1,
-            positionY: 1,
-            title: `${0 - boards.length}`,
-            workspaceId: workspaceId,
-          })
-        }
-      >
-        Add Board
-      </Button>
+    <div className="overflow-hidden w-full h-full">
+      <div className="flex flex-col gap-8 text-2xl font-semibold border border-gray-400 justify-center bg-accent rounded-br-lg p-4 shadow-2xl w-86">
+        {workspace && workspace.title}
+        <div className="flex items-center">
+          <Button
+            className="p-5 text-[0.7em]"
+            onClick={() =>
+              addBoard({
+                id: `${0 - boards.length}`,
+                activities: [],
+                positionX: boards.length + 1,
+                positionY: 1,
+                title: ``,
+                workspaceId: workspace.id,
+              })
+            }
+          >
+            Add Board
+          </Button>
+        </div>
+      </div>
 
       <DndContext
         collisionDetection={closestCorners}
@@ -109,8 +107,10 @@ export default function BoardContainer({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: `repeat(${boards.length}, minmax(500px, 500px))`,
+              gridTemplateColumns: `repeat(${boards.length + 2}, minmax(400px, 400px))`,
               gap: "1em",
+              alignItems: 'start',
+              paddingLeft: '8em',
             }}
             className={cn(`p-4 h-full overflow-auto`)}
           >
@@ -119,6 +119,7 @@ export default function BoardContainer({
             ))}
           </div>
         </SortableContext>
+        <EditorSidebar />
       </DndContext>
     </div>
   );

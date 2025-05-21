@@ -1,5 +1,5 @@
 import Home from "@/features/home/Home";
-import Workspace from "@/features/workspace/components/workspace";
+import Workspace from "@/features/workspace/components/workspace/workspace";
 import Layout from "@/layouts/main";
 import { Navigate, Route, Routes } from "react-router-dom";
 

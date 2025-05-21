@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers;
 
+[ApiController]
 [Route("[Controller]")]
 public class BoardController : ControllerBase
 {
@@ -14,28 +15,6 @@ public class BoardController : ControllerBase
     public BoardController(AppDbContext context)
     {
         _context = context;
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateBoardDto model)
-    {
-        try
-        {
-            BoardEntity board = new()
-            {
-                Title = model.Title,
-                WorkspaceId = model.WorkspaceId,
-            };
-
-            _context.Boards.Add(board);
-            await _context.SaveChangesAsync();
-
-            return Created();
-        }
-        catch (Exception ex)
-        {
-            return BadRequest();
-        }
     }
 
     [HttpGet("from-workspace/{workspaceId}")]
@@ -84,24 +63,36 @@ public class BoardController : ControllerBase
     //    }
     //}
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateBoardDto model)
+    [HttpPost]
+    public async Task<IActionResult> Upsert([FromBody] UpsertBoardDto model)
     {
         try
         {
-            BoardEntity? board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == model.Id);
-            if (board == null)
+            
+            if (model.Id.Length <= 5)
             {
+                BoardEntity boardEntity = new()
+                {
+                    Title = model.Title,
+                    WorkspaceId = model.WorkspaceId,
+                    PositionX = model.PositionX,
+                };
+                _context.Boards.Add(boardEntity);
+                await _context.SaveChangesAsync();
+                return Ok(boardEntity);
+            }
+            else
+            {
+                BoardEntity? board = await _context.Boards.FirstOrDefaultAsync(b => b.Id == new Guid(model.Id));
+                if (board != null)
+                {
+                    board.Title = model.Title;
+                    board.PositionX = model.PositionX;
+                    await _context.SaveChangesAsync();
+                    return Ok(board);
+                }
                 return NotFound();
             }
-            board.Title = model.Title;
-            board.PositionX = model.PositionX;
-            board.PositionY = model.PositionY;
-            board.Width = model.Width;
-            board.Height = model.Height;
-
-            await _context.SaveChangesAsync();
-            return Ok(board);
         }
         catch (Exception ex)
         {

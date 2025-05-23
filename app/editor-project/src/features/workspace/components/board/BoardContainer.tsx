@@ -41,7 +41,6 @@ export default function BoardContainer({
   );
 
   const handleDragMove = (event: DragMoveEvent) => {
-    // https://github.com/chetanverma16/dndkit-guide/blob/main/pages/index.tsx#L384
     const { active, over } = event;
 
     if (active.data.current?.type === "activity") {
